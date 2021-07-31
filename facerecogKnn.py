@@ -23,7 +23,7 @@ def predict(img_path, knn_clf=None, model_path=None, threshold=0.6): # 6 needs 4
     # Predict classes and remove classifications that aren't within the threshold
     return [(pred, loc) if rec else ("unknown", loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings),face_box,matches
     )]
-webcam = cv2.VideoCapture("videos/gal2.mp4") #  0 to use webcam 
+webcam = cv2.VideoCapture(0) #  0 to use webcam 
 while True:
     # Loop until the camera is working
     rval = False
@@ -33,13 +33,12 @@ while True:
         if(not rval):
             print("Failed to open webcam. Trying again...")
             
-    start_frame =time.time()
     # Flip the image (optional)
     frame=cv2.flip(frame,1) # 0 = horizontal ,1 = vertical , -1 = both
     frame_copy = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
     # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
     frame_copy=cv2.cvtColor(frame_copy, cv2.COLOR_BGR2RGB)
-    predictions = predict(frame_copy, model_path="classifier/trained_knn_model.clf")
+    predictions = predict(frame_copy, model_path="") # add path here
     font = cv2.FONT_HERSHEY_DUPLEX
     for name, (top, right, bottom, left) in predictions:
         top *= 4 #scale back the frame since it was scaled to 1/4 in size
